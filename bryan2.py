@@ -73,6 +73,16 @@ async def logUserBot():
     excluded_group_ids = [-4579739145,-1002374855071,-4533984963,-1001881259144,-1002143368527,-1001580673964,-1001737351681,-1001829996546,-1002018025154,-1001733869168,-1001748356782,-1001859082953]  # Reemplaza con los IDs de los grupos a excluir
     special_group_ids = [-1001907073788,-1001899823705,-1002374855071,-1001617010310,-1002074331354,-1002221235561,-1001867739320,-1001789640951,-1001890531963,-1001983920380,-1001724620371]  # Reemplaza con los IDs de los grupos especiales
 
+    @client.on(events.NewMessage)
+    async def my_event_handler(event):
+        # Verificar si el mensaje proviene de un chat privado
+        if event.is_private:
+            sender = await event.get_sender()
+            sender_id = sender.id
+            message = event.message.message
+            # Responder solo en chats privados
+            await client.send_message(sender_id, "Esta es una cuenta solo de Spam. Si estas interesado en algun servicio, escríbeme en @DeannWinch indicando el servicio.")
+
     while True:
         groups_info = await getListOfGroups(client)
         messages_list = await getMessagesFromGroup(client, spammer_group)
@@ -100,21 +110,21 @@ async def logUserBot():
                             if resultado:
                                 await client.send_message("@spmav2", f'<b>Mensaje enviado a {i["group_id"]}</b> - <code>{i["group_name"]}</code>', parse_mode="HTML")  
                             await asyncio.sleep(90)
-                            if j == 4: break
+                            if j == 12: break
                     else:
                         j = 0
                         for message_spam in messages_list:
                             j += 1
                             resultado = True
                             try:
-                                await client.send_message(i["group_id"], message_spam)
+                                await client.forward_messages(i["group_id"], message_spam)
                             except Exception as error:
                                 await client.send_message("@spmav2", f'<b>Error enviando mensajes a {i["group_id"]}</b> - <code>{i["group_name"]}<code>\nCausa:{error}', parse_mode="HTML")
                                 resultado = False
                             if resultado:
                                 await client.send_message("@spmav2", f'<b>Mensaje enviado a {i["group_id"]}</b> - <code>{i["group_name"]}</code>', parse_mode="HTML")  
                             await asyncio.sleep(10)
-                            if j == 4: break
+                            if j == 12: break
             await client.send_message("@spmav2", f'<b>RONDA ACABADA</b>', parse_mode="HTML")
             await asyncio.sleep(100) 
         except:
